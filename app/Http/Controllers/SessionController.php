@@ -4,17 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-session_start();
+require 'JWT/jwt.php';
+use \Firebase\JWT\JWT;
 class SessionController extends Controller
 {
-        public function close() {}
-        public function read($sessionId) {
-            $value = Session::get($sessionId);
-            return $value;
+        public function read($token) {
+
+     $decoded = JWT::decode($jwt, base64_decode(strtr($key, '-_', '+/')), ['HS256']);
+     return $decoded;
+                        //     print_r($decoded);
         }
-        public function write($sessionId, $data) {
-            Session::put($sessionId, $data);
-        }
-        public function destroy($sessionId) {}
-        public function gc($lifetime) {}
 }

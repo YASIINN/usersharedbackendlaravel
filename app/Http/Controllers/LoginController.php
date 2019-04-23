@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cache;
+require 'JWT/jwt.php';
+use \Firebase\JWT\JWT;
+
 class LoginController extends Controller
 {
     public function signin(Request $request){
+       $location= $request->locationname;
+       $coord=$request->coord;
         $clientIP = \Request::getClientIp(true);
         $result= DB::table('user')->where("usname",$request->username)->get();
         if(count($result)>0){
@@ -23,8 +28,21 @@ class LoginController extends Controller
                     ->where("user.userid",$pswmatch[0]->userid)
                     ->get();
                     $logintime= app('App\Http\Controllers\UserTimeController')->addusertime($result[0]->userid,date("d_m_Y"),"",$clientIP);
-                    $location= app('App\Http\Controllers\UserLocationController')->adduserlocation($result[0]->userid,$request->location,$request->coord,$clientIP);
+                    $location= app('App\Http\Controllers\UserLocationController')->adduserlocation($result[0]->userid,$location,$coord,$clientIP);
+
+
+
+
+
                     if(count($result)>0){
+                        $token_payload = [
+                             'usid'=>$result[0]->userid,
+                            'email' => $result[0]->usname,
+                             'username'=>$result[0]->username,
+                             "userlastname"=>$result[0]->uslname
+                          ];
+                          $key = $result[0]->usname;
+                          $jwt = JWT::encode($token_payload, base64_decode(strtr($key, '-_', '+/')), 'HS256');
                         for($i=0;$i<count($result);$i++){
                             $user[] = array(
                             "userfirstname" => $result[$i]->username,
@@ -33,7 +51,7 @@ class LoginController extends Controller
                             "userid" => $result[$i]->userid,
                             "roleid" => $result[$i]->roleid,
                             "role" => $result[$i]->rolename,
-                            "token" => $result[$i]->token,
+                            "token" => $jwt,
                             "genderid" => $result[$i]->genderid,
                             "gender"=>$result[$i]->gender,
                             "cityid" => $result[$i]->city,
@@ -46,15 +64,13 @@ class LoginController extends Controller
                             "avatar" =>"data:image/jpeg:image/png;base64,".base64_encode($result[$i]->avatar),
                             "username" => $result[$i]->usname,
                             "IP"=>$clientIP,
-                            "logintime"=>$logintime->original
-
+                            "logintime"=>$logintime->original,
+                            "location"=>$location->original
                         );
                         }
 
 
-                 //  $test= app('App\Http\Controllers\SessionController')->read("123");
-
-                     return response()->json($user, 200);
+                  return response()->json($user, 200);
 
                     }else{
                         return response()->json(array(['status'=>"NotDefine"]), 200);

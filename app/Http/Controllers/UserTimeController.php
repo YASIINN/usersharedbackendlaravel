@@ -16,7 +16,7 @@ class UserTimeController extends Controller
                "ip"=> $ip,
            ]
         );
-        if(count($result)>0){
+        if($result){
             $record=DB::table('usertime')->get()->where("id",$result);
             return response()->json($record);
         }else{
