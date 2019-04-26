@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 class UserTimeController extends Controller
 {
-     public function addusertime($usid,$logintime,$logouttime,$ip)
+     public function addusertime($usid,$logintime,$logouttime,$ip,$logindate,$logoutdate)
     {
         $result= DB::table('usertime')->insertGetId(
             [
@@ -14,6 +14,8 @@ class UserTimeController extends Controller
                "logintime"=> $logintime,
                "logouttime"=> $logouttime,
                "ip"=> $ip,
+               "logindate"=>$logindate,
+               "logoutdate"=>$logoutdate
            ]
         );
         if($result){
@@ -23,4 +25,5 @@ class UserTimeController extends Controller
             return response()->json(['status'=>"Not"]);
         }
     }
+
 }
