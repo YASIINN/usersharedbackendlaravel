@@ -12,7 +12,7 @@ class SessionController extends Controller
      $decoded = JWT::decode($token, base64_decode(strtr($key, '-_', '+/')), ['HS256']);
      if($decoded){
         $result=DB::table('user')
-        ->where("userid","20")
+        ->where("userid",$id)
         ->get();
         if($decoded->usid==$result[0]->userid && $decoded->email==$result[0]->usname && $token==$result[0]->token){
                return true;

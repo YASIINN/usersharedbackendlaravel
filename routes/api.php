@@ -16,10 +16,7 @@ Route::get("/getblocklist/{id}","BlockedUserListController@getblocklist");
 
 //Category
 Route::get("/getcategory","CategoryController@getcategory");
-
-
 //Category
-Route::get("/tokentest/{token}","SessionController@read");
 
 
 //register
@@ -54,9 +51,22 @@ Route::post("/GetPassword","PasswordController@getuserpass")->middleware(Token::
 
 Route::post('/deneme', 'CityUniController@test');
 Route::get('/test', 'TestController@index');
-Route::post("/setav","UserController@test");
+
+//Product
+Route::post("/addnewproduct","ProductController@add")->middleware(Token::class);
 
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Product
+
+Route::post("/addprphotos","ProductPhotoController@add");
+
+//ProductUser
+
+Route::post("/addproductuser","UserProductController@add");
+
+//ProductUser
+
+
+//PrPhoto
+Route::post("/addnewphoto","PhotoController@addphoto");
+//PrPhoto
