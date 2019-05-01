@@ -54,11 +54,14 @@ Route::get('/test', 'TestController@index');
 
 //Product
 Route::post("/addnewproduct","ProductController@add")->middleware(Token::class);
-
-
+Route::post("/getproduct","ProductController@getproduct")->middleware(Token::class);
+Route::post("/productdetail","ProductController@getproductdetail")->middleware(Token::class);
+Route::post("/delproduct","ProductController@softdelete")->middleware(Token::class);
+Route::post("/updateproduct","ProductController@update")->middleware(Token::class);
 //Product
 
 Route::post("/addprphotos","ProductPhotoController@add");
+Route::post("/getphotos","ProductPhotoController@getproductphoto");
 
 //ProductUser
 
@@ -70,3 +73,9 @@ Route::post("/addproductuser","UserProductController@add");
 //PrPhoto
 Route::post("/addnewphoto","PhotoController@addphoto");
 //PrPhoto
+
+//FavProduct
+Route::get("/favcount/{prid}","FavProductController@favprcount");
+
+//FavProduct
+Route::post("/isuserproduct","UserProductController@get")->middleware(Token::class);

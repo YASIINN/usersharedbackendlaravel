@@ -7,20 +7,44 @@ use Illuminate\Http\Request;
 class ProductPhotoController extends Controller
 {
     public function add(Request $request){
-        $data =$request->data;
-        for ($i=0; $i <count($data) ; $i++) {
+        $datalist =$request->data;
+        $arr=array();
+        for ($i=0; $i <count($datalist) ; $i++) {
             $result=DB::table('productphotos')->insertGetId(
                 [
-                    "productid"=>$data[$i]['productid'],
-                    "photoid"=>$data[$i]['photoid'],
+                    "productid"=>$datalist[$i]['productid'],
+                    "photoid"=>$datalist[$i]['photoid'],
                   ]);
-
                   if($result){
-                    return response()->json(array(['status'=>"Inserted"]), 200);
+                    array_push($arr,['status'=>"Inserted"],['Content-type'=> 'application/json; charset=utf-8']);
                       }else{
-                        return response()->json(array(['status'=>"NotInserted"]), 200);
+                        return response()->json(array(['status'=>"NotInserted"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                       }
         }
+        return response()->json($arr, 200);
+    }
+    public function getproductphoto(Request $request){
+        $queryparse=$request->urlparse;
+        $parser=  app('App\Http\Controllers\UrlParseController')->queryparser($queryparse);
+        $result=DB::table('productphotos')
+        ->join('photo', 'productphotos.photoid', '=', 'photo.id')
+        ->select('productphotos.*','photo.*')
+         ->where($parser)
+         ->get();
+         if(count($result)>0){
 
+         for($i=0;$i<count($result);$i++){
+            $photos[] = array(
+                    "productid"=>$result[$i]->productid,
+                    "photoid"=>$result[$i]->photoid,
+                    "img" =>"data:image/jpeg:image/png;base64,".base64_encode($result[$i]->photo),
+                    "isloading"=>"block",
+            );
+        }
+        return response()->json($photos, 200,['Content-type'=> 'application/json; charset=utf-8']);
+    }
+else{
+    return response()->json(array(['status'=>"Not"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
+}
     }
 }

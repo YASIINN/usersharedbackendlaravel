@@ -11,8 +11,13 @@ class LoginController extends Controller
 
 
     public function signout(Request $request){
+
+        date_default_timezone_set('Europe/Istanbul');
+        $queryparse=$request->urlparse;
+        $parser=  app('App\Http\Controllers\UrlParseController')->queryparser($queryparse);
         $settime= DB::table('usertime')
-        ->where('id', $request->timeid)
+        ->where($parser)
+        //'id', $request->timeid
         ->update(['logouttime' => date("H:i"),
             'logoutdate'=>date("d_m_Y")
         ]);
@@ -39,6 +44,7 @@ class LoginController extends Controller
                     ->select('user.*','city.*','userrole.*','university.*','gender.*','contact.*' ,'avatar.*')
                     ->where("user.userid",$pswmatch[0]->userid)
                     ->get();
+                    date_default_timezone_set('Europe/Istanbul');
                     $logintime= app('App\Http\Controllers\UserTimeController')->addusertime($result[0]->userid,date("h:i"),"",$clientIP,date("d_m_Y"),"");
                     $location= app('App\Http\Controllers\UserLocationController')->adduserlocation($result[0]->userid,$location,$coord,$clientIP);
                     if(count($result)>0){

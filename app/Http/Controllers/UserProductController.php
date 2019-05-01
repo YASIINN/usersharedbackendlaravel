@@ -19,4 +19,14 @@ class UserProductController extends Controller
                     return response()->json(array(['status'=>"NotInserted"]), 200);
         }
    }
+   public function get(Request $request){
+    $queryparse=$request->urlparse;
+    $parser=  app('App\Http\Controllers\UrlParseController')->queryparser($queryparse);
+    $userproduct=DB::table('userproduct')->where($parser)->get();
+    if(count($userproduct)>0){
+            return response()->json(array(['status'=>true]), 200);
+    }else{
+                return response()->json(array(['status'=>false]), 200);
+    }
+   }
 }

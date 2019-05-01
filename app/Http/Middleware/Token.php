@@ -20,11 +20,11 @@ class Token
         if($token===true){
             return $next($request);
         }else{
-            return response()->json(array(['status'=>"NotToken"]), 200);
+            return response()->json(array(['status'=>"UNAUTHORIZED"]), 401,['Content-type'=> 'application/json; charset=utf-8']);
         }
     }
         else{
-                return response()->json(array(['status'=>"BadRequest"]), 200);
+                return response()->json(array(['status'=>"BadRequest"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
             }
     }
 }
