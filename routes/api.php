@@ -60,8 +60,12 @@ Route::post("/delproduct","ProductController@softdelete")->middleware(Token::cla
 Route::post("/updateproduct","ProductController@update")->middleware(Token::class);
 //Product
 
+
+//middle table
 Route::post("/addprphotos","ProductPhotoController@add");
 Route::post("/getphotos","ProductPhotoController@getproductphoto");
+Route::post("/delproductphotos","ProductPhotoController@delproductphotos");
+//middle table
 
 //ProductUser
 
@@ -72,6 +76,7 @@ Route::post("/addproductuser","UserProductController@add");
 
 //PrPhoto
 Route::post("/addnewphoto","PhotoController@addphoto");
+Route::post("/updatephoto","PhotoController@update");
 //PrPhoto
 
 //FavProduct
@@ -79,3 +84,9 @@ Route::get("/favcount/{prid}","FavProductController@favprcount");
 
 //FavProduct
 Route::post("/isuserproduct","UserProductController@get")->middleware(Token::class);
+
+
+//Comment
+Route::post("/addcomment","CommentAndStarController@add")->middleware(Token::class);
+
+//Comment

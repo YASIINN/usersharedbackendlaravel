@@ -21,7 +21,7 @@ class LoginController extends Controller
         ->update(['logouttime' => date("H:i"),
             'logoutdate'=>date("d_m_Y")
         ]);
-            return response()->json(array(['status'=>true]), 200);
+            return response()->json(array(['status'=>true]), 200,['Content-type'=> 'application/json; charset=utf-8']);
     }
 
 
@@ -82,15 +82,15 @@ class LoginController extends Controller
                             "phone"=>$result[$i]->phone
                         );
                         }
-                 return response()->json($user, 200);
+                 return response()->json($user, 200,['Content-type'=> 'application/json; charset=utf-8']);
                     }else{
-                        return response()->json(array(['status'=>"NotDefine"]), 200);
+                        return response()->json(array(['status'=>"NotDefine"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                     }
                 }else{
-                    return response()->json(array(['status'=>"NotDefine"]), 200);
+                    return response()->json(array(['status'=>"NotDefine"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                 }
         }else{
-            return response()->json(array(['status'=>"NotDefine"]), 200);
+            return response()->json(array(['status'=>"NotDefine"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
         }
 
     }

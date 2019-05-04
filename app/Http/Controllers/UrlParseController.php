@@ -13,7 +13,17 @@ class UrlParseController extends Controller
                         $arr []=[
                                 $parser[$i]['PropertyName'] , "=",$parser[$i]['PropertyValue']
                         ];
+            }else  if($parser[$i]['Operation']=="CT"){
+                $arr []=[
+                    $parser[$i]['PropertyName'] , "like", '%' .$parser[$i]['PropertyValue'].'%'
+            ];
                 }
+                else  if($parser[$i]['Operation']=="NE"){
+                    $arr []=[
+                        $parser[$i]['PropertyName'] , "!=", $parser[$i]['PropertyValue']
+                ];
+                    }
+
         }
         return $arr;
     }

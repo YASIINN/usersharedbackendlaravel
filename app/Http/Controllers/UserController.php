@@ -51,27 +51,29 @@ class UserController extends Controller
                                 ]);
                             if($defaultavatar){
                                 $record=DB::table('user')->get()->where("userid",$result);
-                                return response()->json($record, 200);
+                                return response()->json($record, 200,['Content-type'=> 'application/json; charset=utf-8']);
                             }else{
-                                return response()->json(array(['status'=>"AvatarError"]), 200);
+                                return response()->json(array(['status'=>"AvatarError"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                             }
 
                         }else{
-                            return response()->json(array(['status'=>"TokenError"]), 200);
+                            return response()->json(array(['status'=>"TokenError"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                         }
                 }else{
-                    return response()->json(array(['status'=>"NotPswInsert"]), 200);
+                    return response()->json(array(['status'=>"NotPswInsert"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                 }
 
             }else{
-                return response()->json(array(['status'=>"NotContactInsert"]), 200);
+                return response()->json(array(['status'=>"NotContactInsert"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
             }
 
         }else{
-            return response()->json(array(['status'=>"NotInsert"]), 200);
+            return response()->json(array(['status'=>"NotInsert"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
         }
     }
     public function getuser(Request $request){
+        $queryparse=$request->urlparse;
+        $parser=  app('App\Http\Controllers\UrlParseController')->queryparser($queryparse);
         $clientIP = \Request::getClientIp(true);
         $result = DB::table('user')
         ->join('city', 'user.city', '=', 'city.cityid')
@@ -81,7 +83,7 @@ class UserController extends Controller
         ->join('contact', 'user.userid', '=', 'contact.userid')
         ->join('avatar', 'user.avatarid', '=', 'avatar.avatarid')
         ->select('user.*','city.*','userrole.*','university.*','gender.*','contact.*' ,'avatar.*')
-        ->where("user.userid",$request->userid)
+        ->where($parser)
         ->get();
         if(count($result)>0){
             $token_payload = [
@@ -111,21 +113,13 @@ class UserController extends Controller
                             "createddate" => $result[$i]->createddate,
                             "avatarid" => $result[$i]->avatarid,
                             "avatar" =>"data:image/jpeg:image/png;base64,".base64_encode($result[$i]->avatar),
-                            "username" => $result[$i]->usname,
                             "IP"=>$clientIP,
                             "phone"=>$result[$i]->phone
         );
         }
-        return response()->json($user, 200);
+        return response()->json($user, 200,['Content-type'=> 'application/json; charset=utf-8']);
     }else{
-        return response()->json(array(['status'=>"Not"]), 200);
+        return response()->json(array(['status'=>"Not"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
     }
-    }
-    public function test(Request $request){
-        $avatar=16;
-        $usersavatar=DB::table('user')
-        ->where('userid', $request->userid)
-        ->update(['avatarid' => $avatar]);
-        echo $usersavatar;
     }
 }

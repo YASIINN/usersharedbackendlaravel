@@ -47,4 +47,29 @@ else{
     return response()->json(array(['status'=>"Not"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
 }
     }
+    public function delproductphotos(Request $request){
+            if(isset($request->in)){
+                        $inarr=array();
+                        for ($i=0; $i <count($request->in) ; $i++) {
+                                array_push($inarr,$request->in[$i]);
+                        }
+               $result= DB::table('productphotos')->whereIn('photoid', $inarr)
+                ->delete();
+                if($result){
+                        return response()->json(array(['status'=>"Success"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
+                }else{
+                    return response()->json(array(['status'=>"Error"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
+                }
+            }else{
+                $queryparse=$request->urlparse;
+                $parser=  app('App\Http\Controllers\UrlParseController')->queryparser($queryparse);
+                $result= DB::table('productphotos')->where($parser)->delete();
+                if($result){
+                    return response()->json(array(['status'=>"Success"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
+            }else{
+                return response()->json(array(['status'=>"Error"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
+            }
+            }
+
+    }
 }

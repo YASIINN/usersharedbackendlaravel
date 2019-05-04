@@ -28,4 +28,23 @@ class PhotoController extends Controller
         }
         return response()->json($arr, 200);
 }
+public function update(Request $request){
+       DB::beginTransaction();
+         $result=DB::table("photo") ->where('id', $request->oldheader)
+         ->update(['seqnumber' => 1]);
+         if($result){
+          $newresult=DB::table("photo") ->where('id', $request->newheader)
+          ->update(['seqnumber' => 0]);
+          if($newresult){
+            DB::commit();
+            return response()->json(array(['status'=>"Success"]), 200);
+          }else{
+            return response()->json(array(['status'=>"Error"]), 200);
+            DB::rollback();
+          }
+         }else{
+          return response()->json(array(['status'=>"Error"]), 200);
+          DB::rollback();
+         }
+}
 }

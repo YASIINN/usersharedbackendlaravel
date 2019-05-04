@@ -52,9 +52,9 @@ class ProductController extends Controller
                 ]
         );
         if($newproduct){
-                return response()->json(array(['status'=>"InsertedProduct",'id'=>$newproduct]), 200);
+                return response()->json(array(['status'=>"InsertedProduct",'id'=>$newproduct]), 200,['Content-type'=> 'application/json; charset=utf-8']);
         }else{
-                return response()->json(array(['status'=>"NotInserted"]), 200);
+                return response()->json(array(['status'=>"NotInserted"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
         }
     }
         public function getproductdetail(Request $request){
@@ -75,39 +75,41 @@ class ProductController extends Controller
               ->where($parser)
               ->get();
               if(count($products)>0){
+                $favcount= app('App\Http\Controllers\FavProductController')->favprcount($products[0]->productid);
+                $seencount= app('App\Http\Controllers\UserSeenProductController')->seencount($products[0]->productid);
               for($i=0;$i<count($products);$i++){
-                $img[] = array(
-                       "data:image/jpeg:image/png;base64,".base64_encode($products[$i]->photo),
-                            );
+                             $product[] = array(
+                                "productid"=>$products[$i]->productid,
+                                "title"=>$products[$i]->title,
+                                "descraption"=>$products[$i]->descraption,
+                                "price"=>$products[$i]->price,
+                                "oldprice"=>$products[$i]->oldprice,
+                                "categoryid"=>$products[$i]->category,
+                                "categorytxt"=>$products[$i]->categorytxt,
+                                "productstatus"=>$products[$i]->productstatus,
+                                "status"=>$products[$i]->status,
+                                "cityid"=>$products[$i]->cityid,
+                                "cityname"=>$products[$i]->cityname,
+                                "date"=>$products[$i]->date,
+                                "time"=>$products[$i]->time,
+                                "university"=>$products[$i]->university,
+                                "universityname"=>$products[$i]->universityname,
+                                "seqnumber"=>$products[$i]->seqnumber,
+                                "img" =>  "data:image/jpeg:image/png;base64,".base64_encode($products[$i]->photo),
+                                "favcount"=>$favcount,
+                                "seencount"=>$seencount,
+                                "username"=>$products[$i]->username,
+                                "usname"=>$products[$i]->usname,
+                                "uslname"=>$products[$i]->uslname,
+                                "userid"=>$products[$i]->userid,
+                                "avatarid" => $products[$i]->avatarid,
+                                "imagesid"=>$products[$i]->photoid,
+                                "avatar" =>"data:image/jpeg:image/png;base64,".base64_encode($products[0]->avatar),
+                                        );
+
             }
-            $favcount= app('App\Http\Controllers\FavProductController')->favprcount($products[0]->productid);
-            $seencount= app('App\Http\Controllers\UserSeenProductController')->seencount($products[0]->productid);
-            $product[] = array(
-                "productid"=>$products[0]->productid,
-                "title"=>$products[0]->title,
-                "descraption"=>$products[0]->descraption,
-                "price"=>$products[0]->price,
-                "oldprice"=>$products[0]->oldprice,
-                "categoryid"=>$products[0]->category,
-                "categorytxt"=>$products[0]->categorytxt,
-                "productstatus"=>$products[0]->productstatus,
-                "status"=>$products[0]->status,
-                "cityid"=>$products[0]->cityid,
-                "cityname"=>$products[0]->cityname,
-                "date"=>$products[0]->date,
-                "time"=>$products[0]->time,
-                "university"=>$products[0]->university,
-                "universityname"=>$products[0]->universityname,
-                "img" =>$img,
-                "favcount"=>$favcount,
-                "seencount"=>$seencount,
-                "username"=>$products[0]->username,
-                "usname"=>$products[0]->usname,
-                "uslname"=>$products[0]->uslname,
-                "userid"=>$products[0]->userid,
-                "avatarid" => $products[0]->avatarid,
-                "avatar" =>"data:image/jpeg:image/png;base64,".base64_encode($products[0]->avatar),
-                        );
+        
+
                         return response()->json(["data"=>$product], 200,['Content-type'=> 'application/json; charset=utf-8']);
                     }
                         else{
@@ -133,9 +135,12 @@ class ProductController extends Controller
         ->join('photo', 'productphotos.photoid', '=', 'photo.id')
         ->select('product.*','productstatus.*','userproduct.*','user.*','category.*','city.*' ,'university.*','productphotos.*','photo.*','contact.*','avatar.*')
         ->where($parser)
+        ->orderBy('product.productid', 'desc')
         ->get();
+        $totalmoney=0;
         if(count($products)>0){
         for($i=0;$i<count($products);$i++){
+            $totalmoney+=(int)$products[$i]->price;
             $favcount= app('App\Http\Controllers\FavProductController')->favprcount($products[$i]->productid);
             $seencount= app('App\Http\Controllers\UserSeenProductController')->seencount($products[$i]->productid);
             $product[] = array(
@@ -172,9 +177,9 @@ class ProductController extends Controller
             $product= array_slice($product, (10*$request->pagination)-10,10*$request->pagination);
         }
 
-    return response()->json(["data"=>$product,"count"=>$arrcount], 200,['Content-type'=> 'application/json; charset=utf-8']);
+    return response()->json(["data"=>$product,"count"=>$arrcount,"totalmoney"=>$totalmoney], 200,['Content-type'=> 'application/json; charset=utf-8']);
     }else{
-        return response()->json(array(['status'=>"Not"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
+        return response()->json(['status'=>"Not"], 200,['Content-type'=> 'application/json; charset=utf-8']);
     }
     }
 }

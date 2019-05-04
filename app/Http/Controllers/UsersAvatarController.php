@@ -11,7 +11,7 @@ class UsersAvatarController extends Controller
 
 
     public function addnewavatar(Request $request){
-        $user=$request->userid;
+            $user=$request->userid;
            $avatar=DB::table('avatar')->insertGetId([
             'avatar'=>base64_decode($request->base64),
             'type'=>$request->type,
