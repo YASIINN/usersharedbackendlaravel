@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 class CityUniController extends Controller
 {
     public function getcityuni($cityid){
+        
         $university = DB::table('cityuni')
         ->join('city', 'cityuni.cityid', '=', 'city.cityid')
         ->join('university', 'cityuni.universityid', '=', 'university.universityid')

@@ -8,6 +8,7 @@ class ProductController extends Controller
 {
 
             public function update(Request $request){
+                DB::beginTransaction();
                 $data= $request->updatedata;
                 $updated=  app('App\Http\Controllers\UpdateDataParseController')->updateparse($data);
                 $queryparse=$request->urlparse;
@@ -16,13 +17,16 @@ class ProductController extends Controller
                 ->where($parser)
                 ->update($updated);
                 if($setproduct){
+                    DB::commit();
                     return response()->json(array(['status'=>"Updated"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                 }else{
+                    DB::rollback();
                     return response()->json(array(['status'=>"Error"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                 }
             }
 
         public function softdelete(Request $request){
+            DB::beginTransaction();
             $queryparse=$request->urlparse;
             $parser=  app('App\Http\Controllers\UrlParseController')->queryparser($queryparse);
             $setproduct= DB::table('product')
@@ -30,13 +34,16 @@ class ProductController extends Controller
             ->update(['productstatus' =>5
             ]);
             if($setproduct){
+                DB::commit();
                 return response()->json(array(['status'=>"Deleted"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
             }else{
+                DB::rollback();
                 return response()->json(array(['status'=>"Error"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
             }
         }
 
     public function add(Request $request){
+        DB::beginTransaction();
         $newproduct=DB::table('product')->insertGetId(
                 [
                     "title"=>$request->title,
@@ -52,12 +59,15 @@ class ProductController extends Controller
                 ]
         );
         if($newproduct){
+            DB::commit();
                 return response()->json(array(['status'=>"InsertedProduct",'id'=>$newproduct]), 200,['Content-type'=> 'application/json; charset=utf-8']);
         }else{
+            DB::rollback();
                 return response()->json(array(['status'=>"NotInserted"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
         }
     }
         public function getproductdetail(Request $request){
+            DB::beginTransaction();
             $queryparse=$request->urlparse;
             $parser=  app('App\Http\Controllers\UrlParseController')->queryparser($queryparse);
               $products=DB::table('product')
@@ -108,11 +118,12 @@ class ProductController extends Controller
                                         );
 
             }
-        
 
+            DB::commit();
                         return response()->json(["data"=>$product], 200,['Content-type'=> 'application/json; charset=utf-8']);
                     }
                         else{
+                            DB::rollback();
                             return response()->json(array(['status'=>"Not"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                         }
 
@@ -120,8 +131,9 @@ class ProductController extends Controller
 
 
     public function getproduct(Request $request){
+        DB::beginTransaction();
         $queryparse=$request->urlparse;
-      $parser=  app('App\Http\Controllers\UrlParseController')->queryparser($queryparse);
+      $parser= app('App\Http\Controllers\UrlParseController')->queryparser($queryparse);
         $products=DB::table('product')
         ->join('productstatus', 'product.productstatus', '=', 'productstatus.id')
         ->join('userproduct', 'product.productid', '=', 'userproduct.productid')
@@ -176,9 +188,10 @@ class ProductController extends Controller
         }else if ($request->pagination){
             $product= array_slice($product, (10*$request->pagination)-10,10*$request->pagination);
         }
-
+        DB::commit();
     return response()->json(["data"=>$product,"count"=>$arrcount,"totalmoney"=>$totalmoney], 200,['Content-type'=> 'application/json; charset=utf-8']);
     }else{
+        DB::rollback();
         return response()->json(['status'=>"Not"], 200,['Content-type'=> 'application/json; charset=utf-8']);
     }
     }

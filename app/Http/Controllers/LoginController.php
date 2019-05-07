@@ -42,7 +42,7 @@ class LoginController extends Controller
                     ->join('contact', 'user.userid', '=', 'contact.userid')
                     ->join('avatar', 'user.avatarid', '=', 'avatar.avatarid')
                     ->select('user.*','city.*','userrole.*','university.*','gender.*','contact.*' ,'avatar.*')
-                    ->where("user.userid",$pswmatch[0]->userid)
+                    ->where("user.usname",$request->username)
                     ->get();
                     date_default_timezone_set('Europe/Istanbul');
                     $logintime= app('App\Http\Controllers\UserTimeController')->addusertime($result[0]->userid,date("h:i"),"",$clientIP,date("d_m_Y"),"");

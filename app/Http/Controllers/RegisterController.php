@@ -41,12 +41,13 @@ class RegisterController extends Controller
                             return response()->json(array(['status'=>"Using"]), 200);
                         }else{
                     $activatecode=$request->code."-".date("d_m_Y");
+                    $mail=$request->remail;
                     $result= DB::table('register')->insertGetId(
                          [
                             "cityid"=> $request->rcity,
                             "rname"=> $request->rufirstname,
                             "rlname"=> $request->rlastname,
-                            "rusername"=> $request->remail,
+                            "rusername"=> $mail,
                             "roleid"=> 2,
                             "password"=>$request->rpass,
                             "gender"=> $request->rgender,
@@ -57,7 +58,7 @@ class RegisterController extends Controller
                         ]
                      );
                      if($result){
-                        $mailresult= app('App\Http\Controllers\MailController')->index("Kayıt Aktivasyonu",$activatecode,"ysndlklc1234@gmail.com");
+                        $mailresult= app('App\Http\Controllers\MailController')->index("Kayıt Aktivasyonu",$activatecode,$mail);
                         if($mailresult=="success"){
                             $record=DB::table('register')->get()->where("registerid",$result);
                              return response()->json($record, 200);

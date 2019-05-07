@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 class CityController extends Controller
 {
         public function getallcity(){
-            $value =  Cache::rememberForever('key', function() {
+            $value =  Cache::rememberForever('city', function() {
                 $results = DB::select('select * from city');
                 return $results;
             });

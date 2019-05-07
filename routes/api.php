@@ -54,8 +54,9 @@ Route::get('/test', 'TestController@index');
 
 //Product
 Route::post("/addnewproduct","ProductController@add")->middleware(Token::class);
-Route::post("/getproduct","ProductController@getproduct")->middleware(Token::class);
-Route::post("/productdetail","ProductController@getproductdetail")->middleware(Token::class);
+Route::post("/getproduct","ProductController@getproduct");
+//->middleware(Token::class);
+Route::post("/productdetail","ProductController@getproductdetail");
 Route::post("/delproduct","ProductController@softdelete")->middleware(Token::class);
 Route::post("/updateproduct","ProductController@update")->middleware(Token::class);
 //Product
@@ -90,3 +91,24 @@ Route::post("/isuserproduct","UserProductController@get")->middleware(Token::cla
 Route::post("/addcomment","CommentAndStarController@add")->middleware(Token::class);
 
 //Comment
+
+
+//FavProduct
+Route::post("/addfav","FavProductController@addfavproduct")->middleware(Token::class);
+Route::post("/delfav","FavProductController@delfavproduct")->middleware(Token::class);
+
+//FavProduct
+
+
+//Notification
+Route::post("/addnotification","NotificationController@addnotification")->middleware(Token::class);
+Route::post("/getnotification","NotificationController@getnotification")->middleware(Token::class);
+Route::post("/setnotification","NotificationController@setnotification")->middleware(Token::class);
+
+//Notification
+
+
+//Seen
+Route::post("/addseen","UserSeenProductController@add");
+
+//Seen
