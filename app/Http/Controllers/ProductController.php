@@ -183,7 +183,10 @@ class ProductController extends Controller
                             );
         }
         $arrcount=count($product);
-        if($request->pagination=="1"){
+        if($request->pagination=="0"){
+            $product=$product;
+        }
+        else if($request->pagination=="1"){
             $product= array_slice($product, 0,10);
         }else if ($request->pagination){
             $product= array_slice($product, (10*$request->pagination)-10,10*$request->pagination);

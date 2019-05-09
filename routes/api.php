@@ -28,6 +28,7 @@ Route::get("/getregister/{code}","RegisterController@getregister");
 //user
 Route::post("/user","UserController@addnewuser");
 Route::post("/userget","UserController@getuser");
+Route::post("/getuserdetail","UserController@getdetail");
 //user
 
 
@@ -89,7 +90,7 @@ Route::post("/isuserproduct","UserProductController@get")->middleware(Token::cla
 
 //Comment
 Route::post("/addcomment","CommentAndStarController@add")->middleware(Token::class);
-
+Route::post("/getcomment","CommentAndStarController@getcomment")->middleware(Token::class);
 //Comment
 
 

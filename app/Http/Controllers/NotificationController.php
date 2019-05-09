@@ -13,7 +13,7 @@ class NotificationController extends Controller
 
         $result=DB::table("notification")->insert([
             "nttype"=>$request->type,
-            "touser "=>$request->touser,
+            "touser"=>$request->touser,
             "fromuser"=>$request->fromuser,
             "productid"=>$request->prid,
             "reading"=>"n"

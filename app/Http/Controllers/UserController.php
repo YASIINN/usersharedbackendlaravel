@@ -10,6 +10,11 @@ require 'JWT/jwt.php';
 use \Firebase\JWT\JWT;
 class UserController extends Controller
 {
+
+
+
+
+
     public function addnewuser(Request $request){
 
         $result= DB::table('user')->insertGetId(
@@ -50,8 +55,8 @@ class UserController extends Controller
                                         'userid'=>$result
                                 ]);
                             if($defaultavatar){
-                                $record=DB::table('user')->get()->where("userid",$result);
-                                return response()->json($record, 200,['Content-type'=> 'application/json; charset=utf-8']);
+
+                                return response()->json(array(['status'=>"Success"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                             }else{
                                 return response()->json(array(['status'=>"AvatarError"]), 200,['Content-type'=> 'application/json; charset=utf-8']);
                             }
