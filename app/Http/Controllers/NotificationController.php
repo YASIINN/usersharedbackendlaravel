@@ -16,7 +16,9 @@ class NotificationController extends Controller
             "touser"=>$request->touser,
             "fromuser"=>$request->fromuser,
             "productid"=>$request->prid,
-            "reading"=>"n"
+            "reading"=>"n",
+            "ntfdate"=>$request->date,
+            "ntftime"=>$request->time
         ]) ;
         if($result){
                 DB::commit();
@@ -55,6 +57,7 @@ class NotificationController extends Controller
             ->join('user', 'notification.touser', '=', 'user.userid')
             ->select('notification.*','product.*','user.*')
             ->where($parser)
+            ->orderBy('notification.id', 'desc')
             ->get();
             if(count($result)>0){
                     DB::commit();

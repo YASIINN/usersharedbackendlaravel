@@ -32,7 +32,7 @@ class CommentAndStarController extends Controller
         $parser=  app('App\Http\Controllers\UrlParseController')->queryparser($queryparse);
         $clientIP = \Request::getClientIp(true);
         $comments = DB::table('comment')
-        ->join('user', 'comment.fromuser', '=', 'user.userid')
+        ->join('user', 'comment.touser', '=', 'user.userid')
         ->join('avatar', 'user.avatarid', '=', 'avatar.avatarid')
         ->select('comment.*','user.*' ,'avatar.*')
         ->where($parser)
